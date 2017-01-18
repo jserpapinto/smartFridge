@@ -1,0 +1,6 @@
+utilizador pode:
+- mostrar uma cor e ser identificado
+- gerir o seu frigorifico
+	- inserir
+	- retirar
+	- listar 

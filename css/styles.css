@@ -1,0 +1,177 @@
+/**
+ * Pure CSS3 Animated Monster by Taufik Nurrohman
+ * http://cssdeck.com/user/tovic
+ */
+
+body {background-color:#bbb;text-align:center;}
+
+#outer {
+  margin:70px auto;
+  width:200px;
+  height:500px;
+  text-align:center;
+  position:relative;
+}
+
+.eye {
+  overflow:hidden;
+  position:relative;
+  width:200px;
+  height:100px;
+  margin:10px 0px;
+  background-color:white;
+  background-image:-webkit-radial-gradient(center, white, #ccc);
+  background-image:-moz-radial-gradient(center, white, #ccc);
+  background-image:-ms-radial-gradient(center, white, #ccc);
+  background-image:-o-radial-gradient(center, white, #ccc);
+  background-image:radial-gradient(center, white, #ccc);
+  -webkit-box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+  -moz-box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+  box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+  -webkit-border-radius:100%;
+  -moz-border-radius:100%;
+  border-radius:100%;
+  -webkit-animation:eye 2s infinite alternate;
+  -moz-animation:eye 2s infinite alternate;
+  -ms-animation:eye 2s infinite alternate;
+  -o-animation:eye 2s infinite alternate;
+  animation:eye 2s infinite alternate;
+}
+
+.shutup .eyeball {
+  position:relative;
+  width:20px;height:100%;
+  background-color:black;
+  background-image:-webkit-radial-gradient(center, circle, #555, #000);
+  background-image:-moz-radial-gradient(center, circle, #555, #000);
+  background-image:-ms-radial-gradient(center, circle, #555, #000);
+  background-image:-o-radial-gradient(center, circle, #555, #000);
+  background-image:radial-gradient(center, circle, #555, #000);
+  margin:10px auto;
+  -webkit-border-radius:100%;
+  -moz-border-radius:100%;
+  border-radius:100%;
+  -webkit-box-shadow:0px 0px 10px red;
+  -moz-box-shadow:0px 0px 10px red;
+  box-shadow:0px 0px 10px red;
+  -webkit-transform:scale(0.5);-webkit-box-shadow:0px 0px 10px red;
+  -webkit-transform:scale(1);-webkit-box-shadow:0px 0px 30px red, 0px 0px 100px red;
+  -webkit-animation:
+    eye 3s infinite alternate,
+    move 7s infinite alternate,
+    scale 100s  cubic-bezier(1,0,0,0) infinite alternate;
+  animation:
+    eye 3s infinite alternate,
+    move 7s infinite alternate,
+    scale 100s  cubic-bezier(1,0,0,0) infinite alternate;
+}
+.talk .eyeball {
+  position:relative;
+  width:20px;height:100%;
+  background-color:black;
+  background-image:-webkit-radial-gradient(center, circle, #555, #000);
+  background-image:-moz-radial-gradient(center, circle, #555, #000);
+  background-image:-ms-radial-gradient(center, circle, #555, #000);
+  background-image:-o-radial-gradient(center, circle, #555, #000);
+  background-image:radial-gradient(center, circle, #555, #000);
+  margin:10px auto;
+  -webkit-border-radius:100%;
+  -moz-border-radius:100%;
+  border-radius:100%;
+  -webkit-box-shadow:0px 0px 10px red;
+  -moz-box-shadow:0px 0px 10px red;
+  box-shadow:0px 0px 10px red;
+  -webkit-animation:
+    eye 3s infinite alternate,
+    move 7s infinite alternate,
+    scale 0s  cubic-bezier(1,0,0,1) infinite alternate;
+  animation:
+    eye 3s infinite alternate,
+    move 7s infinite alternate,
+    scale 0s  cubic-bezier(1,0,0,1) infinite alternate;
+}
+
+.eye:after {
+  content:"";
+  position:absolute;
+  top:10px;left:40%;
+  background:rgba(255,255,255,0.7);
+  width:10px;
+  height:20px;
+  margin:0px auto 0px;
+  -webkit-border-radius:100%;
+  border-radius:100%;
+  -webkit-box-shadow:0px 0px 13px white;
+  box-shadow:0px 0px 13px white;
+}
+
+.mouth {
+  display:block;
+  width:30px;
+  height:10px;
+  border-top:2px solid black;
+  border-radius:100px 100px 0px 0px;
+  margin:30px auto;
+  -webkit-animation-play-state: paused; /* Safari 4.0 - 8.0 */
+  animation-play-state: paused;
+}
+.talk .mouth {
+  display:block;
+  width:30px;
+  height:10px;
+  border-top:2px solid black;
+  border-radius:100px 100px 0px 0px;
+  margin:30px auto;
+  -webkit-animation:mouth 1s infinite;
+  -moz-animation:mouth 1s infinite;
+  -ms-animation:mouth 1s infinite;
+  -o-animation:mouth 1s infinite;
+  animation:mouth 1s infinite;
+}
+
+
+@-webkit-keyframes eye {
+  0%              {top:50px;height:0px;}
+  10%, 70%, 100%  {top:0px;height:100px;}
+}
+
+@-webkit-keyframes move {
+  25%             {left:20px;}
+  72%             {margin-top:20px;}
+  16%             {margin-top:-20px;}
+  50%, 70%        {left:-20px;}
+  0%, 80%, 100%   {left:0px;margin-top:0px;}
+}
+
+@-webkit-keyframes scale {
+  0%, 70%         {-webkit-transform:scale(0.5);-webkit-box-shadow:0px 0px 10px red;}
+  100%            {-webkit-transform:scale(1);-webkit-box-shadow:0px 0px 30px red, 0px 0px 100px red;}
+}
+
+@-webkit-keyframes mouth {
+  0%, 20%, 76%    {border-top:10px solid black;width:20px;}
+  10%, 50%, 100%  {border-top:2px solid black;width:30px;}
+}
+
+@keyframes eye {
+  0%              {top:50px;height:0px;}
+  10%, 70%, 100%  {top:0px;height:100px;}
+}
+
+@keyframes move {
+  25%             {left:20px;}
+  72%             {margin-top:20px;}
+  16%             {margin-top:-20px;}
+  50%, 70%        {left:-20px;}
+  0%, 80%, 100%   {left:0px;margin-top:0px;}
+}
+
+@keyframes scale {
+  0%, 70%         {transform:scale(0.5);box-shadow:0px 0px 10px red;}
+  100%            {transform:scale(1);box-shadow:0px 0px 30px red, 0px 0px 100px red;}
+}
+
+@keyframes mouth {
+  0%, 20%, 76%    {border-top:10px solid black;width:20px;}
+  10%, 50%, 100%  {border-top:2px solid black;width:30px;}
+}

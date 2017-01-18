@@ -21,31 +21,7 @@ body {background-color:#bbb;text-align:center;background-size: contain;
   box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
 }
 
-.shutup .eye {
-  overflow:hidden;
-  position:relative;
-  width:200px;
-  height:100px;
-  margin:10px 0px 90px;
-  background-color:white;
-  background-image:-webkit-radial-gradient(center, white, #ccc);
-  background-image:-moz-radial-gradient(center, white, #ccc);
-  background-image:-ms-radial-gradient(center, white, #ccc);
-  background-image:-o-radial-gradient(center, white, #ccc);
-  background-image:radial-gradient(center, white, #ccc);
-  -webkit-box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
-  -moz-box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
-  box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
-  -webkit-border-radius:100%;
-  -moz-border-radius:100%;
-  border-radius:100%;
-  -webkit-animation:eyeclosed 2s infinite alternate;
-  -moz-animation:eyeclosed 2s infinite alternate;
-  -ms-animation:eyeclosed 2s infinite alternate;
-  -o-animation:eyeclosed 2s infinite alternate;
-  animation:eyeclosed 2s infinite alternate;
-}
-.talk .eye {
+.eye {
   overflow:hidden;
   position:relative;
   width:200px;
@@ -166,10 +142,6 @@ body {background-color:#bbb;text-align:center;background-size: contain;
   0%              {top:50px;height:0px;}
   10%, 70%, 100%  {top:0px;height:100px;}
 }
-@-webkit-keyframes eyeclosed {
-  0%              {top:50px;height:10px;}
-  10%, 70%, 100%  {top:50px;height:10px;}
-}
 
 @-webkit-keyframes move {
   25%             {left:20px;}
@@ -210,4 +182,13 @@ body {background-color:#bbb;text-align:center;background-size: contain;
 @keyframes mouth {
   0%, 20%, 76%    {border-top:10px solid black;width:20px;}
   10%, 50%, 100%  {border-top:2px solid black;width:30px;}
+}
+
+
+
+#commands {
+  display: inline;
+  float: left;
+  list-style: none;
+  font-size: 20px;
 }

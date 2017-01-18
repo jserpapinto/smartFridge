@@ -10,17 +10,42 @@
 (function(window) {
     // Vars
     let ws;
-    let registredCommands = [];
-    /**
-     * Called on body load
-     */
+    let currentCommand = {
+        action: "",
+        product: "",
+        quanitty: "",
+    };
+    let messageRecieved = false;
+    let context = {
+        name: ""
+    };
+
+    /** SOCKET */
+    function webSocketConf() {
+        ws = new WebSocket("ws://LIPTON:8080/p5websocket");
+    }
+
+    /** Send message to server with callbacks */
+    function sendToServer(msg, callbackOK) {
+        ws.send(msg.toString().toLowerCase());
+        ws.onmessage = function(evt, callback) {
+            console.log(evt.data);
+            messageRecieved = evt.data;
+            console.log(callbackOK, callbackBAD);
+            if(callbackOK != undefined) {
+                callbackOK(messageRecieved);
+            } else {
+                console.error('No callback defined');
+            }
+        };
+    }
+    /** .SOCKET */
+
+    /** Called on body load */
     window.init = function() {
         if ("WebSocket" in window) {
             // start websocket
-            ws = new WebSocket("ws://tenzingyatso:9090/yourholiness");
-            ws.onmessage = function(evt) {
-                console.log(evt.data);
-            };
+            webSocketConf();
             console.log(ws);
             // Start artyom
             startArtyom();
@@ -31,7 +56,10 @@
             return false;
         }
     }
+    /** .Called on body load */
 
+
+    /** ARTYOM */
     function robotConfig() {
         artyom.when("SPEECH_SYNTHESIS_START", function() {
             document.body.className = "talk";
@@ -53,65 +81,92 @@
             continuous: true
         }).then(() => {
             console.log("Artyom has been succesfully initialized");
-
             // Start with main commands
-            addCommands(mainCommands);
+            askAuth();
 
         }).catch((err) => {
             console.error("Artyom couldn't be initialized: ", err);
-        });;
-
+        });
     }
+    /** .ARTYOM */
 
-    /**
-     * COMMANDS
-     */
 
+    /** COMMANDS */
     function addCommands(cmds) {
-        removeAllCommands();
+        artyom.emptyCommands();
         cmds.forEach( function(cmd, index) {
             // add Command
             artyom.addCommands(cmds);
-            // registered Command
-            registredCommands.push(mainCommands);
         });
+        artyom.say("You have new commands!");
     }
 
-    function removeAllCommands() {
-        registredCommands.forEach( function(cmd, index) {
-            artyom.removeCommands(cmd);
-        });
+    function askAuth() {
+        addCommands(authCommand);
+    }
+    function askHowMany() {
+        addCommands(howmanyCommands);
+    }
+    function addMainCommands () {
+        addCommands(mainCommands);
+    }
+    function cancel() {
+        artyom.say("Canceled");
+        addCommands(mainCommands);
+    }
+    function loggedin(username) {
+        if (username != "?") {
+            context.name = username;
+            artyom.say('Thank you, '+ context.name + '!');
+            addMainCommands();
+        } else {
+            artyom.say('Incorrect login!');
+        }
     }
 
-    function sendToServer(msg) {
-        ws.send(msg);
-    }
+    let authCommand = [{   
+        indexes: ["login *"],
+        smart: true,
+        action: function(i, name){
+            // Send action to server
+            if (Array.isArray(name)) name = name.split[0];
+            sendToServer("login " + name, loggedin, cancel);
+            
+        }
+    }];
 
+    let listCommand = [{   
+        indexes: ["List"],
+        action: function(i){
+            let action = this.indexes[i].split(" *")[0];
+            // Send action to server
+            sendToServer(action, askHowMany());
+
+        }
+    }];
 
     let mainCommands = [{   
-        indexes: ["Insert *", "Remove *", "List *"],
+        indexes: ["Insert *", "Remove *", "Search *"],
         smart:true,
         action: function(i, product){
             let action = this.indexes[i].split(" *")[0];
-            console.log(action + "ing, " + product);
             // Send action to server
             sendToServer(action);
             // Send product to server
             sendToServer(product);
-            // How many?
-            artyom.say('How many?');
-            // Add commands
-            addCommands(howmanyCommands);
+            sendToServer("*"+ action + " " + product);
+
         }
     }];
+
 
     let howmanyCommands = [{
         indexes: ['*'],
         smart: true,
         action: function(i, number) {
             if (parseInt(number)) {
-                artyom.say(number);
                 sendToServer(number.toString());
+                sendToServer("*" + number.toString());
             } else if (number == "cancel") {
                 artyom.addCommands(mainCommands);
                 artyom.say("Back to basics!")
@@ -121,71 +176,7 @@
         }
     }];
     /**
-     * .COMMANDS
-     */
-
-    artyom.on(['Good morning','Good afternoon']).then(function(i){
-        switch (i) {
-            case 0:
-                artyom.say("Good morning, how are you?");
-
-                artyom.on(['Fine thanks','Little bit okay']).then(function(i){
-                    switch (i) {
-                        case 0:
-                            artyom.say("Fuck off!");
-                        break;
-                        case 1:
-                            artyom.say("Fuck in!");
-                        break;            
-                    }
-                });
-
-            break;
-            case 1:
-                artyom.say("Good afternoon, how are you?");
-            break;            
-        }
-    });
-
-    /*
-    artyom.newPrompt({
-        question:"We have no cheese, you want it without cheese anyway ?",
-        options:["Yes","No","Buy some cheese"],
-        beforePrompt: () => {
-            console.log("Before ask");
-        },
-        onStartPrompt: () => {
-            console.log("The prompt is being executed");
-        },
-        onEndPrompt: () => {
-            console.log("The prompt has been executed succesfully");
-        },
-        onMatch: (i) => { // i returns the index of the given options
-            var action;
-
-            if(i == 0){ 
-                action =  () => {
-                    artyom.say("Your sandwich will be ready in a minute");
-                }
-            }
-
-            if(i == 1){ 
-                action =  () => {
-                    artyom.say("You may consider to order some cheese later");
-                }
-            }
-
-            if(i == 2){
-                action = () => {
-                    artyom.say("I'll order some cheese via eBay");
-                }
-            }
-
-            // A function needs to be returned in onMatch event
-            // in order to accomplish what you want to execute
-            return action; 
-        }
-    });*/
+     * .COMMANDS */
 
 
 })(window);

@@ -3,17 +3,49 @@
  * http://cssdeck.com/user/tovic
  */
 
-body {background-color:#bbb;text-align:center;}
-
-#outer {
-  margin:70px auto;
-  width:200px;
-  height:500px;
-  text-align:center;
-  position:relative;
+body {background-color:#bbb;text-align:center;background-size: contain;
+  /*background-image: url('https://s-media-cache-ak0.pinimg.com/originals/aa/a5/c6/aaa5c645775fecb8fde91e3f898ce640.jpg');*/
 }
 
-.eye {
+#outer {
+  margin:170px auto;
+  background-color:#bbb;
+  width:200px;
+  height:200px;
+  padding: 25px;
+  text-align:center;
+  position:relative;
+  border-radius: 30%;
+  -webkit-box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+  -moz-box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+  box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+}
+
+.shutup .eye {
+  overflow:hidden;
+  position:relative;
+  width:200px;
+  height:100px;
+  margin:10px 0px 90px;
+  background-color:white;
+  background-image:-webkit-radial-gradient(center, white, #ccc);
+  background-image:-moz-radial-gradient(center, white, #ccc);
+  background-image:-ms-radial-gradient(center, white, #ccc);
+  background-image:-o-radial-gradient(center, white, #ccc);
+  background-image:radial-gradient(center, white, #ccc);
+  -webkit-box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+  -moz-box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+  box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+  -webkit-border-radius:100%;
+  -moz-border-radius:100%;
+  border-radius:100%;
+  -webkit-animation:eyeclosed 2s infinite alternate;
+  -moz-animation:eyeclosed 2s infinite alternate;
+  -ms-animation:eyeclosed 2s infinite alternate;
+  -o-animation:eyeclosed 2s infinite alternate;
+  animation:eyeclosed 2s infinite alternate;
+}
+.talk .eye {
   overflow:hidden;
   position:relative;
   width:200px;
@@ -133,6 +165,10 @@ body {background-color:#bbb;text-align:center;}
 @-webkit-keyframes eye {
   0%              {top:50px;height:0px;}
   10%, 70%, 100%  {top:0px;height:100px;}
+}
+@-webkit-keyframes eyeclosed {
+  0%              {top:50px;height:10px;}
+  10%, 70%, 100%  {top:50px;height:10px;}
 }
 
 @-webkit-keyframes move {

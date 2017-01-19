@@ -23,7 +23,8 @@ let cmds, fridge
 
 /** SOCKET */
 function webSocketConf() {
-    ws = new WebSocket("ws://LIPTON:8080/p5websocket")
+    //ws = new WebSocket("ws://LIPTON:8080/p5websocket")
+    ws = new WebSocket("ws://tenzingyatso:9090/supersmart")
 }
 /** .SOCKET */
 
@@ -35,7 +36,7 @@ window.init = function() {
         console.log(ws)
         // Start artyom
         cmds = cmdFactory()
-        fridge = fridgeFactory()
+        fridge = fridgeFactory("Anibal", window, artyom)
         fridge.start()
     } else {
         // The browser doesn't support WebSocket
@@ -60,16 +61,18 @@ function showCommands () {
     div.innerHTML = ""
     artyom.getAvailableCommands().forEach(function(cmds) {
         cmds.indexes.forEach(function(cmd) {
-            div.innerHTML += "<li>" + cmd + " |</li>"
+            div.innerHTML += "<div class='col-3 alert alert-info'>" + cmd + "</div>"
         })
     })
 }
 function askAuth() {
+    console.log("passei 3")
     myAddCommands(cmds.authCommand, "Hello! Please login!")
 }
 function askHowMany(msg) {
-    if (msg == "OK")
+    if (msg == "OK") {
         myAddCommands(cmds.howmanyCommands, "How many?")
+    }
     else 
         fridge.say(msg)
 }
@@ -95,7 +98,9 @@ function loggedin(username) {
 function logout () {
     fridge.shutdown();
     context.name = null;
+    console.log("n passei")
     fridge.start(); 
+    console.log("passei")
 }
 /**
  * .COMMANDS */

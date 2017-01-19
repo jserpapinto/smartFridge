@@ -1,17 +1,9 @@
-/**
- * Pure CSS3 Animated Monster by Taufik Nurrohman
- * http://cssdeck.com/user/tovic
- */
-
-body {background-color:#bbb;text-align:center;background-size: contain;
-  /*background-image: url('https://s-media-cache-ak0.pinimg.com/originals/aa/a5/c6/aaa5c645775fecb8fde91e3f898ce640.jpg');*/
-}
 
 #outer {
-  margin:170px auto;
+  margin:100px auto;
   background-color:#bbb;
-  width:200px;
-  height:200px;
+  width:250px;
+  height:250px;
   padding: 25px;
   text-align:center;
   position:relative;
@@ -184,11 +176,3 @@ body {background-color:#bbb;text-align:center;background-size: contain;
   10%, 50%, 100%  {border-top:2px solid black;width:30px;}
 }
 
-
-
-#commands {
-  display: inline;
-  float: left;
-  list-style: none;
-  font-size: 20px;
-}

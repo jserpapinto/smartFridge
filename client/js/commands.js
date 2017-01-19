@@ -1,12 +1,14 @@
+"use strict"
 
 const cmdFactory = () => {
 
     let alwaysCommands = [{
-        indexes: ["cancel", "logout"],
+        indexes: ["cancel", "logout", "hack"],
         action: function(i){
             // Send action to server
             if (i == 0) cancel();
             else if (i == 1) logout();
+            else if (i == 2) fridge.hacks();
         }
     }]
 

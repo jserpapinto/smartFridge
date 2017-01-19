@@ -8,13 +8,16 @@ const fridgeFactory = (name) => {
 
 	// Construct
 	let init = (() => {
+		console.log("\n------------- INIT ----------------")
 		_name = name
+        cmds = cmdFactory()
 		_start()
 		hacks = _bindHacks()
 	})()
 
 	function _start() {
-    console.log("passei 2")
+		console.log("\n------------- START ----------------")
+		console.log("\tStarting...")
 	    artyom.initialize({
 	        lang:"en-GB",
 	        debug:true, // Show what recognizes in the Console
@@ -24,13 +27,24 @@ const fridgeFactory = (name) => {
 	        mode:"normal", // This parameter is not required as it will be normal by default
 	        continuous: true
 	    }).then(() => {
-	        console.log("Artyom has been succesfully initialized")
+			console.log("\t------- START - THEN -------")
+	        console.log("\t\tArtyom has been succesfully initialized")
 	        // Start with main commands
 	        askAuth()
 	        _robotConfig()
 	    }).catch((err) => {
-	        console.error("Artyom couldn't be initialized: ", err)
+			console.log("\t------- START - ERROR -------")
+	        console.error("\t\tArtyom couldn't be initialized: ", err)
 	    })
+	}
+
+	function shutdown() {
+		console.log("shutting down")
+		say("Logging out. see you next time " + context.name)
+		artyom.fatality()
+		setTimeout( () => {
+			sendToServer("logout")
+		},1000)
 	}
 
 	function _bindHacks () {
@@ -51,12 +65,15 @@ const fridgeFactory = (name) => {
 
 		let init = (() => {
 			let c = 1;
+			$("#hacks").html("")
 			hacks.forEach((hack) => {
-				console.log(hack)
 				$("#hacks").append(template.replace('TITLE', hack.title).replace('ID', c))
 				$("#hack-" + c).on('click', hack.action)
 				c++;
 			})
+			console.log("\n------------- BIND HACKS ----------------")
+			console.table(hacks);
+			console.log("------------- END BIND HACKS ----------------")
 		})()
 
 		let toggleHacks = () => {
@@ -71,7 +88,7 @@ const fridgeFactory = (name) => {
 			artyom.simulateInstruction("insert banana")
 		}
 		function hackHowMany() {
-			artyom.simulateInstruction(300)
+			artyom.simulateInstruction("300")
 		}
 		function hackLogout() {
 			artyom.simulateInstruction("logout")
@@ -85,6 +102,7 @@ const fridgeFactory = (name) => {
 
 	/** ARTYOM */
 	let _robotConfig = () => {
+		console.log("\n------------- ROBOT CONFIG ----------------\n")
 	    artyom.when("SPEECH_SYNTHESIS_START", function() {
 	        document.body.className = document.body.className.replace("shutup", "talk")
 	    })
@@ -93,11 +111,6 @@ const fridgeFactory = (name) => {
 	    })
 	}
 	/** .ARTYOM */
-
-	let shutdown = () => {
-		artyom.fatality()
-		say("Logging out. see you next time " + context.name)
-	}
 
 	let say = (msg, obj) => {
 	    artyom.say(msg, obj)
@@ -113,7 +126,7 @@ const fridgeFactory = (name) => {
 
 	        console.log(evt.data, typeof(evt.data));
 
-	        console.log(callback)
+	        console.log("callback ->", callback)
 	        if (callback != undefined) {
 	            callback(evt.data)
 	        }

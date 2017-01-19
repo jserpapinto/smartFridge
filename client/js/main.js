@@ -24,7 +24,8 @@ let cmds, fridge
 /** SOCKET */
 function webSocketConf() {
     //ws = new WebSocket("ws://LIPTON:8080/p5websocket")
-    ws = new WebSocket("ws://tenzingyatso:9090/supersmart")
+    console.log("SOCKET")
+    ws = new WebSocket("ws://tenzingyatso:8080/p5websocket")
 }
 /** .SOCKET */
 

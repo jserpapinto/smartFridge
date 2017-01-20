@@ -4,12 +4,13 @@ const cmdFactory = () => {
 
 
     let alwaysCommands = [{
-        indexes: ["cancel", "logout", "hack"],
+        indexes: ["cancel", "logout", "let me hack you", "are you ok"],
         action: function(i){
             // Send action to server
-            if (i == 0) cancel();
-            else if (i == 1) logout();
-            else if (i == 2) fridge.hacks();
+            if (i == 0) window.fridge.cancel();
+            else if (i == 1) window.fridge.logout();
+            else if (i == 2) window.fridge.hacks();
+            else if (i == 3) window.fridge.okay();
         }
     }]
 
@@ -20,6 +21,14 @@ const cmdFactory = () => {
             console.log("name -> ", name)
             // Send action to server
             window.fridge.tryAuthentication(name)
+        }
+    },{   
+        indexes: ["are you ok", "how are you"],
+        action: function(i, name){
+            if (i == 0)
+                window.fridge.okay()
+            else if (i == 1)
+                window.fridge.howareyou()
         }
     }];
 
@@ -38,44 +47,34 @@ const cmdFactory = () => {
         smart:true,
         action: function(i, product){
             let action = this.indexes[i].split(" *")[0]
-            // Send action to server
             window.fridge.insertIn(product)
         }
     }, {   
         indexes: ["Remove *", "Take out *"],
         smart:true,
         action: function(i, product){
-            let action = this.indexes[i].split(" *")[0];
-            // Send action to server
-            window.fridge(action)
-            setTimeout(function() {
-                if (i == 0 || i == 1) 
-                    fridge.sendToServer(product, askHowMany)
-                else if (i == 2)
-                    fridge.sendToServer(product)
-            }, 1000)
+            window.fridge.remove(product)
         }
     }, {   
         indexes: ["Search *", "Do you have *"],
         smart:true,
         action: function(i, product){
-            let action = this.indexes[i].split(" *")[0];
-            // Send action to server
-            window.fridge(action)
-            setTimeout(function() {
-                if (i == 0 || i == 1) 
-                    fridge.sendToServer(product, askHowMany)
-                else if (i == 2)
-                    fridge.sendToServer(product)
-            }, 1000)
+            window.fridge.search(product)
         }
     }];
 
     let howmanyCommands = [{
-        indexes: ['*'],
+        indexes: ['number *'],
         smart: true,
         action: function(i, number) {
             window.fridge.sendNumber(number)
+        }
+    }];
+    let howmanyCommandsRemove = [{
+        indexes: ['number *'],
+        smart: true,
+        action: function(i, number) {
+            window.fridge.sendNumberRemove(number)
         }
     }];
 
@@ -144,7 +143,9 @@ const cmdFactory = () => {
         loggedin: loggedin,
         showCommands: showCommands,
         logout: logout,
+        alwaysCommands: alwaysCommands,
         mainCommands: mainCommands,
-        howmanyCommands: howmanyCommands
+        howmanyCommands: howmanyCommands,
+        howmanyCommandsRemove: howmanyCommandsRemove
     }
 }

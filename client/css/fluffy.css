@@ -18,6 +18,27 @@
   position:relative;
   width:200px;
   height:100px;
+  margin:10px 0px 110px;
+  background-color:white;
+  background-image:-webkit-radial-gradient(center, white, #ccc);
+  background-image:-moz-radial-gradient(center, white, #ccc);
+  background-image:-ms-radial-gradient(center, white, #ccc);
+  background-image:-o-radial-gradient(center, white, #ccc);
+  background-image:radial-gradient(center, white, #ccc);
+  -webkit-box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+  -moz-box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+  box-shadow:inset 0px -4px 10px rgba(0,0,0,0.4), 0px 1px 7px white, 0px -1px 7px black;
+  -webkit-border-radius:100%;
+  -moz-border-radius:100%;
+  border-radius:100%;
+  -webkit-animation:eyeclosed 2s infinite alternate;
+  animation:eyeclosed 2s infinite alternate;
+}
+.started .eye {
+  overflow:hidden;
+  position:relative;
+  width:200px;
+  height:100px;
   margin:10px 0px;
   background-color:white;
   background-image:-webkit-radial-gradient(center, white, #ccc);
@@ -32,9 +53,6 @@
   -moz-border-radius:100%;
   border-radius:100%;
   -webkit-animation:eye 2s infinite alternate;
-  -moz-animation:eye 2s infinite alternate;
-  -ms-animation:eye 2s infinite alternate;
-  -o-animation:eye 2s infinite alternate;
   animation:eye 2s infinite alternate;
 }
 
@@ -156,6 +174,10 @@
 @keyframes eye {
   0%              {top:50px;height:0px;}
   10%, 70%, 100%  {top:0px;height:100px;}
+}
+@keyframes eyeclosed {
+  0%              {top:50px;height:10px;}
+  10%, 70%, 100%  {top:50px;height:10px;}
 }
 
 @keyframes move {

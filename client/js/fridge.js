@@ -1,6 +1,6 @@
 "use strict"
 
-const fridge = (name) => {
+const fridge = (name, socket) => {
 
 	// Attributes
 	let _ws
@@ -24,14 +24,19 @@ const fridge = (name) => {
 
 		// Boot functions
 		_webSocketConf() // Start Socket
-		_start() // Start fridge
 	})()
 
 	// Socket init configurations
 	function _webSocketConf() {
 	    //ws = new WebSocket("ws://LIPTON:8080/p5websocket")
-	    _ws = new WebSocket("ws://tenzingyatso:9090/supersmart")
+	    _ws = new WebSocket("ws://" + socket)
 	    h.debug(_ws)
+	    _ws.onmessage = (res) => {
+	    	if (res.data == "START") {
+	    		document.body.className += " started"
+				_start() // Start fridge
+	    	}
+	    }
 	}
 
 	// Start fridge
@@ -42,7 +47,7 @@ const fridge = (name) => {
 	        lang:"en-GB",
 	        debug:true, // Show what recognizes in the Console
 	        listen:true, // Start listening after this
-	        speed:1.5, // Talk a little bit slow
+	        speed:1, // Talk a little bit slow
 	        soundex: true,// Use the soundex algorithm to increase accuracy
 	        mode:"normal", // This parameter is not required as it will be normal by default
 	        continuous: true
@@ -77,9 +82,7 @@ const fridge = (name) => {
 		h.debug("shutting down")
 		say("Logging out. see you next time " + context.name)
 		artyom.fatality()
-		setTimeout( () => {
-			sendToServer("logout")
-		},1000)
+		sendToServer("logout")
 	}
 
 
@@ -89,9 +92,9 @@ const fridge = (name) => {
     function authenticateUser() {
     	h.debug("AUTHENTICATE USER")
     	// Check if user already logged in
-    	if (_user != null && _user.name != null) return say("You are already logged in")
+    	if (_user != null) return say("You are already logged in")
     	// Begin auth process
-        bindCommands(_cmds.auth)
+        bindCommands(_cmds.auth, true)
     	say("Hello! Please login!")
     }
     function tryAuthentication(name) {
@@ -115,11 +118,16 @@ const fridge = (name) => {
     	_user = userFactory(name)
     	say("Welcome " + _user.name + "! Nice to see you!", {
     		onEnd: () => {
-		console.log(_cmds.mainCommands)
-    			bindCommands(_cmds.mainCommands, true)
+				console.log(_cmds.mainCommands)
+    			bindCommands(_cmds.alwaysCommands, true)
+    			bindCommands(_cmds.mainCommands)
     			say("Tell me what you want to do!")
+    			cleanInput();
     		}
     	})
+    }
+    function cleanUser() {
+    	_user = null;
     }
 // ------------------------------------
 
@@ -130,39 +138,53 @@ const fridge = (name) => {
 		sendToServer("insert")
 		setTimeout(() => {
 			sendToServer(product)
-		}, 1000)
+		}, 2000)
 		console.log(_cmds.howmanyCommands)
 		bindCommands(_cmds.howmanyCommands, true)
 		setTimeout(() => {
 			say("How many?")
-		}, 1000)
+		}, 5000)
 	}
 	function remove(product) {
 		sendToServer("remove")
-
 		setTimeout(() => {
 			sendToServer(product)
-		}, 1000)
-
+		}, 2000)
 		_ws.onmessage = (res) => {
 			h.debug(res.data)
 
 			if (res.data == "OK") {
-				bindCommands(_cmds.howmanyCommands, true)
+				bindCommands(_cmds.alwaysCommands, true)
+				bindCommands(_cmds.howmanyCommandsRemove)
 				say("How many?")
 			} else {
-				bindCommands(_cmds.mainCommands, true)
+				bindCommands(_cmds.alwaysCommands, true)
+				bindCommands(_cmds.mainCommands)
 				say("You don't have " + product + "!")
 			}
 		}
 	}
 	function search(product) {
-		say("Searching...")
+		setTimeout(() => {
+			sendToServer("search")
+		}, 1000)
+		setTimeout(() => {
+			say("Searching...")
+		}, 500)
+		setTimeout(() => {
+			sendToServer(product)
+		}, 2000)
 		_ws.onmessage = (res) => {
 			h.debug(res.data)
 
-			// Say response
-			say("You have " + res.data + " " + product)
+			if (res.data != "?") {
+				say("You have " + res.data + " " + product)
+				bindCommands(_cmds.alwaysCommands, true)
+				bindCommands(_cmds.mainCommands)
+			}
+			else {
+				say("You don't have " + product)
+			}
 		}
 	}
 	function sendNumber(number) {
@@ -171,8 +193,8 @@ const fridge = (name) => {
 
 			_ws.onmessage = (res) => {
 				h.debug(res.data)
-
 				if (res.data == "OK") {
+					bindCommands(_cmds.alwaysCommands)
 					bindCommands(_cmds.mainCommands, true)
 					say("Done! What else?")
 				} else {
@@ -180,8 +202,26 @@ const fridge = (name) => {
 				}
 			}
 		} else {
-			say("Tell me a number!")
+			say("Can't parse it!")
 		}
+	}
+	function sendNumberRemove(number) {
+		if (parseInt(number)) {
+			sendToServer(number)
+
+			_ws.onmessage = (res) => {
+				h.debug(res.data)
+				bindCommands(_cmds.alwaysCommands)
+				bindCommands(_cmds.mainCommands, true)
+				say(res.data)
+			}
+		} else {
+			say("Can't parse it!")
+		}
+	}
+	function hacks() {
+		if (document.body.className.indexOf("hacking")) document.body.className = document.body.className.replace("hacking", "")
+		if (document.body.className.indexOf("hacking") < 0) document.body.className = document.body.className.replace("", " hacking")
 	}
 // ------------------------------------
 
@@ -198,6 +238,33 @@ const fridge = (name) => {
 		artyom.addCommands(cmds)
         _cmds.showCommands(artyom.getAvailableCommands())
 	}
+	function cleanInput() {
+		_ws.onmessage = null;
+	}
+	function cancel() {
+		setTimeout(() => {
+			sendToServer("cancel")
+		}, 2000)
+		bindCommands(_cmds.alwaysCommands, true)
+		bindCommands(_cmds.mainCommands)
+		setTimeout(() => {
+			say("Canceling...")
+		}, 2000)
+	}
+	function logout() {
+		say("Logging out securely.. Clearing your account information.")
+		setTimeout(() => {
+			sendToServer("logout")
+		}, 2000)
+		cleanUser();
+	    document.body.className = document.body.className.replace("started", "")
+	    _ws.onmessage = (res) => {
+	    	if (res.data == "START") {
+	    		document.body.className += " started"
+				authenticateUser() // Start fridge
+	    	}
+	    }
+	}
 // ------------------------------------
 
 /* ------------------------------------
@@ -211,8 +278,18 @@ const fridge = (name) => {
 	/** Send message to server with callbacks */
 	let sendToServer = (msg) => {
 		msg = msg.toString().toLowerCase()
-		console.log("------------------\nSENDING: " + msg + "\n------------------")
-	    _ws.send(msg)
+		setTimeout(() => {
+	    	_ws.send(msg)
+			console.log("------------------\nSENDING: " + msg + "\n------------------")
+		}, 200)
+	}
+
+	function okay () {
+		say("Yes, but the way you architected me is awful!")
+	}
+
+	function howareyou () {
+		say("A little bit okay. Your city is freezing! Please cover me with a blanket.")
 	}
 // ------------------------------------
 
@@ -224,6 +301,13 @@ const fridge = (name) => {
 		insertIn: insertIn,
 		remove: remove,
 		search: search,
-		sendNumber: sendNumber
+		sendNumber: sendNumber,
+		sendNumberRemove: sendNumberRemove,
+		logout: logout,
+		cancel: cancel,
+		hacks: hacks,
+		okay: okay,
+		howareyou: howareyou,
+		cleanInput: cleanInput
 	}
 }

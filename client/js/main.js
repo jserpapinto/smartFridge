@@ -22,7 +22,7 @@ let h = helperFactory()
 window.init = function() {
     if ("WebSocket" in window) {
         // Create Fridge
-        window.fridge = fridge("Aníbal")
+        window.fridge = fridge("Aníbal", "LIPTON:8080/supersmart")
     } else {
         // The browser doesn't support WebSocket
         alert("Please buy a new fridge!")

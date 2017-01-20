@@ -2,6 +2,7 @@
 
 const cmdFactory = () => {
 
+
     let alwaysCommands = [{
         indexes: ["cancel", "logout", "hack"],
         action: function(i){
@@ -12,14 +13,13 @@ const cmdFactory = () => {
         }
     }]
 
-    let authCommand = [{   
+    let auth = [{   
         indexes: ["login *"],
         smart: true,
         action: function(i, name){
-            console.log("name", name)
+            console.log("name -> ", name)
             // Send action to server
-            if (Array.isArray(name)) name = name.split[0]
-            fridge.sendToServer("login " + name, loggedin)
+            window.fridge.tryAuthentication(name)
         }
     }];
 
@@ -34,12 +34,34 @@ const cmdFactory = () => {
     }];
 
     let mainCommands = [{   
-        indexes: ["Insert *"], //, "Remove *", "Search *"],
+        indexes: ["Insert *", "Put *"],
+        smart:true,
+        action: function(i, product){
+            let action = this.indexes[i].split(" *")[0]
+            // Send action to server
+            window.fridge.insertIn(product)
+        }
+    }, {   
+        indexes: ["Remove *", "Take out *"],
         smart:true,
         action: function(i, product){
             let action = this.indexes[i].split(" *")[0];
             // Send action to server
-            fridge.sendToServer(action)
+            window.fridge(action)
+            setTimeout(function() {
+                if (i == 0 || i == 1) 
+                    fridge.sendToServer(product, askHowMany)
+                else if (i == 2)
+                    fridge.sendToServer(product)
+            }, 1000)
+        }
+    }, {   
+        indexes: ["Search *", "Do you have *"],
+        smart:true,
+        action: function(i, product){
+            let action = this.indexes[i].split(" *")[0];
+            // Send action to server
+            window.fridge(action)
             setTimeout(function() {
                 if (i == 0 || i == 1) 
                     fridge.sendToServer(product, askHowMany)
@@ -53,12 +75,7 @@ const cmdFactory = () => {
         indexes: ['*'],
         smart: true,
         action: function(i, number) {
-            if (parseInt(number)) {
-                console.log("number parsed", number)
-                fridge.sendToServer(number.toString(), addMainCommands);
-            } else {
-                fridge.say("Please say a number or cancel to quit.")
-            }
+            window.fridge.sendNumber(number)
         }
     }];
 
@@ -73,18 +90,18 @@ const cmdFactory = () => {
         else artyom.say(msg)
         showCommands()
     }
-    function showCommands () {
+    function showCommands (allCmds) {
         var div = document.getElementById('commands')
         div.innerHTML = ""
-        artyom.getAvailableCommands().forEach(function(cmds) {
+        allCmds.forEach(function(cmds) {
             cmds.indexes.forEach(function(cmd) {
                 div.innerHTML += "<div class='col-3 alert alert-info'>" + cmd + "</div>"
             })
         })
     }
-    function askAuth() {
-        console.log("passei 3")
-        myAddCommands(cmds.authCommand, "Hello! Please login!")
+    function authF() {
+        h.debug("AUTH")
+        myAddCommands(authCommand, "Hello! Please login!")
     }
     function askHowMany(msg) {
         if (msg == "OK") {
@@ -101,7 +118,7 @@ const cmdFactory = () => {
         myAddCommands(cmds.mainCommands)
     }
     function loggedin(username) {
-        if (username != "?") {
+        /*if (username != "?") {
             context.name = username
             fridge.say('Welcome, '+ context.name + '! Nice to see you!', {
                 onEnd: function() {
@@ -110,7 +127,7 @@ const cmdFactory = () => {
             })
         } else {
             fridge.say('Incorrect login! Try again.')
-        }
+        }*/
     }
     function logout () {
         console.log("----------------- LOGOUT ----------------")
@@ -120,16 +137,14 @@ const cmdFactory = () => {
     }
 
     return {
-        authCommand: authCommand,
-        listCommand: listCommand,
-        mainCommands: mainCommands,
-        howmanyCommands: howmanyCommands,
-        alwaysCommands: alwaysCommands,
-        askAuth: askAuth,
+        auth: auth,
         askHowMany: askHowMany,
         addMainCommands: addMainCommands,
         cancel: cancel,
         loggedin: loggedin,
-        logout: logout
+        showCommands: showCommands,
+        logout: logout,
+        mainCommands: mainCommands,
+        howmanyCommands: howmanyCommands
     }
 }

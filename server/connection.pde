@@ -15,13 +15,16 @@ void websocketOnClosed(WebSocketConnection con) {
 }
 
 void sendNull() {
+  println("SENDING ?");
   socket.broadcast("?");
 }
 
 void send(String msg) {
+  println("SENDING " + msg);
   socket.broadcast(msg);
 }
 
 void sendOK() {
+  println("SENDING OK");
   socket.broadcast("OK");
 }

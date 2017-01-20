@@ -9,100 +9,24 @@
  */
 "use strict"
 // Vars
-let ws
 let currentCommand = {
     action: "",
     product: "",
     quantity: "",
 }
-let context = {
-    name: null
-}
 // Factory functions
-let cmds, fridge
+window.debug = true
+let h = helperFactory()
 
-/** SOCKET */
-function webSocketConf() {
-    //ws = new WebSocket("ws://LIPTON:8080/p5websocket")
-    console.log("SOCKET")
-    ws = new WebSocket("ws://tenzingyatso:8080/p5websocket")
-}
-/** .SOCKET */
-
-/** Called on body load */
+// First Init, on body load
 window.init = function() {
     if ("WebSocket" in window) {
-        // start websocket
-        webSocketConf()
-        console.log(ws)
-        // Start artyom
-        cmds = cmdFactory()
-        fridge = fridgeFactory("Anibal", window, artyom)
-        fridge.start()
+        // Create Fridge
+        window.fridge = fridge("Aníbal")
     } else {
         // The browser doesn't support WebSocket
         alert("Please buy a new fridge!")
         return false
     }
 }
-/** .Called on body load */
-
-/** COMMANDS */
-function myAddCommands(commands, msg) {
-    artyom.emptyCommands()
-    artyom.addCommands(commands)
-    if (context.name != null)
-        artyom.addCommands(cmds.alwaysCommands)
-    if (msg == undefined) artyom.say("You have new commands!")
-    else artyom.say(msg)
-    showCommands()
-}
-function showCommands () {
-    var div = document.getElementById('commands')
-    div.innerHTML = ""
-    artyom.getAvailableCommands().forEach(function(cmds) {
-        cmds.indexes.forEach(function(cmd) {
-            div.innerHTML += "<div class='col-3 alert alert-info'>" + cmd + "</div>"
-        })
-    })
-}
-function askAuth() {
-    console.log("passei 3")
-    myAddCommands(cmds.authCommand, "Hello! Please login!")
-}
-function askHowMany(msg) {
-    if (msg == "OK") {
-        myAddCommands(cmds.howmanyCommands, "How many?")
-    }
-    else 
-        fridge.say(msg)
-}
-function addMainCommands () {
-    myAddCommands(cmds.mainCommands)
-}
-function cancel() {
-    fridge.say("Canceled")
-    myAddCommands(cmds.mainCommands)
-}
-function loggedin(username) {
-    if (username != "?") {
-        context.name = username
-        fridge.say('Welcome, '+ context.name + '! Nice to see you!', {
-            onEnd: function() {
-                addMainCommands()
-            }
-        })
-    } else {
-        fridge.say('Incorrect login! Try again.')
-    }
-}
-function logout () {
-    fridge.shutdown();
-    context.name = null;
-    console.log("n passei")
-    fridge.start(); 
-    console.log("passei")
-}
-/**
- * .COMMANDS */
 

@@ -10,7 +10,7 @@ ArrayList<clsUser> lstUsers;
 int state, currentP, currentU;
 
 void setup() {
-  socket = new WebSocketP5(this, 8080);
+  socket = new WebSocketP5(this, 9090, "supersmart");
 
   size(634, 1000);
   stroke(32);
@@ -30,7 +30,7 @@ void setup() {
   msg = lastMsg = returnMsg = newP ="";
   LoadProducts("productsList");
   LoadUsers();
-  frameRate(60);
+  frameRate(20);
   //LoadUsersAndProducts("data");
 }
 
